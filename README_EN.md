@@ -12,7 +12,7 @@ A skill package for any AI assistant that supports skills — Claude Code, WorkB
 [upload photo] cyberpunk, simplified background, strong
 ```
 
-![version](https://img.shields.io/badge/version-1.3.0-blue)
+![version](https://img.shields.io/badge/version-1.3.1-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
 
@@ -43,7 +43,7 @@ git clone https://github.com/gaoren7716-lab/anime-image-restyle-skill.git
 
 ### Or download a release zip
 
-Grab `anime-image-restyle-v1.3.0.zip` from the [Releases](https://github.com/gaoren7716-lab/anime-image-restyle-skill/releases) page and unzip it. The archive contains only the runtime skill files — `SKILL.md`, both READMEs, `LICENSE`, `references/`, and `scripts/probe_image.py` — with no `.github/`, `CHANGELOG.md`, or packaging script.
+Grab `anime-image-restyle-v1.3.1.zip` from the [Releases](https://github.com/gaoren7716-lab/anime-image-restyle-skill/releases) page and unzip it. The archive contains only the runtime skill files — `SKILL.md`, both READMEs, `EXAMPLES.md`, `LICENSE`, `references/`, and `scripts/probe_image.py` — with no `.github/`, `CHANGELOG.md`, or packaging script.
 
 ### Claude Code / Claude family
 
@@ -82,6 +82,7 @@ anime-image-restyle-skill/
 ├── SKILL.md                      # main entry — the AI reads only this file first
 ├── README.md                     # Chinese docs
 ├── README_EN.md                  # this file
+├── EXAMPLES.md                   # copy-paste command library (standalone, easy to browse)
 ├── LICENSE                       # MIT
 ├── CHANGELOG.md
 ├── .github/
@@ -168,6 +169,12 @@ For example, "1990s hand-drawn cel, rainy neon street, low-angle wide shot" deco
 `cel-90s-film` (era) + `cyber-rain-neon` (subject) + the lens phrase "low-angle looking up" (LENS slot).
 
 `references/prompt-lexicon.md` provides the English phrase bank across 12 slots. Fill only the slots the user actually named — leave the rest empty rather than padding with defaults.
+
+---
+
+## 7.5 Example library (copy-paste)
+
+Don't want to read all the above? Open **[EXAMPLES.md](EXAMPLES.md)** — a standalone command list organized by "most used / by style / subject / region / frame & intensity / combos", where every line can be copied straight to the AI. It ships with the skill at `anime-image-restyle/EXAMPLES.md`.
 
 ---
 

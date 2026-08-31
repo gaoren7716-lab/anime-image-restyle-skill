@@ -35,6 +35,7 @@ INCLUDE_FILES = [
     "SKILL.md",
     "README.md",
     "README_EN.md",
+    "EXAMPLES.md",
     "LICENSE",
     "references/style-registry.md",
     "references/prompt-lexicon.md",

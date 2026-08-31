@@ -3,6 +3,20 @@
 本文件记录 skill 的版本变化。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.3.1] - 2026-08-31
+
+把示例库从工作区草稿提升为随 skill 分发的独立文档，方便直接查看与复制。
+
+### 新增
+
+- **`EXAMPLES.md`**：单独成篇的一键复制指令清单（最常用 / 按风格分类 / 题材 / 地域 / 画幅强度 / 组合示例），对应 71 key 版本，含简笔与素描
+- `scripts/package.py` 的 `INCLUDE_FILES` 增加 `EXAMPLES.md`，发布包内现在自带示例库（解压即可看）
+- README / README_EN 新增「7.5 示例库」小节并链接 `EXAMPLES.md`，目录结构图同步更新
+
+### 说明
+
+- 纯文档与分发结构调整，风格 key 与提示词逻辑不变，向后兼容
+
 ## [1.3.0] - 2026-08-31
 
 在 v1.2.0（116 key）基础上做精选瘦身，并补全用户指出的两个缺失画风。
@@ -82,6 +96,7 @@
 - 本 skill 需要宿主 AI 具备**图生图（image-to-image）**能力，纯文生图环境无法运行核心流程
 - 包内不含任何本机绝对路径，换机器直接可用
 
+[1.3.1]: https://github.com/gaoren7716-lab/anime-image-restyle-skill/releases/tag/v1.3.1
 [1.3.0]: https://github.com/gaoren7716-lab/anime-image-restyle-skill/releases/tag/v1.3.0
 [1.2.0]: https://github.com/gaoren7716-lab/anime-image-restyle-skill/releases/tag/v1.2.0
 [1.1.0]: https://github.com/gaoren7716-lab/anime-image-restyle-skill/releases/tag/v1.1.0

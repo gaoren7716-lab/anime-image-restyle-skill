@@ -12,7 +12,7 @@
 [上传照片] 赛博朋克，简化背景，强度
 ```
 
-![version](https://img.shields.io/badge/version-1.3.0-blue)
+![version](https://img.shields.io/badge/version-1.3.1-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
 
@@ -43,7 +43,7 @@ git clone https://github.com/gaoren7716-lab/anime-image-restyle-skill.git
 
 ### 或下载 Release 压缩包
 
-从 [Releases](https://github.com/gaoren7716-lab/anime-image-restyle-skill/releases) 页面下载 `anime-image-restyle-v1.3.0.zip` 解压。压缩包内只含运行所需文件（`SKILL.md`、两份 README、`LICENSE`、`references/`、`scripts/probe_image.py`），不含 `.github/`、`CHANGELOG.md` 和打包脚本。
+从 [Releases](https://github.com/gaoren7716-lab/anime-image-restyle-skill/releases) 页面下载 `anime-image-restyle-v1.3.1.zip` 解压。压缩包内只含运行所需文件（`SKILL.md`、两份 README、`EXAMPLES.md`、`LICENSE`、`references/`、`scripts/probe_image.py`），不含 `.github/`、`CHANGELOG.md` 和打包脚本。
 
 ### Claude Code / Claude 系
 
@@ -82,6 +82,7 @@ anime-image-restyle-skill/
 ├── SKILL.md                      # 主流程入口，AI 只会先读这一个文件
 ├── README.md                     # 本文件（中文）
 ├── README_EN.md                  # 英文文档
+├── EXAMPLES.md                   # 示例库（一键复制指令清单，单独成篇方便查看）
 ├── LICENSE                       # MIT 协议
 ├── CHANGELOG.md
 ├── .github/
@@ -94,7 +95,7 @@ anime-image-restyle-skill/
     └── package.py                # 把运行文件打成可分发的 zip
 ```
 
-分文件是为了省 token：`SKILL.md` 内置了 46 条高频口语别名，命中就不用读注册表；只有遇到冷门风格才去读 `style-registry.md`。
+分文件是为了省 token：`SKILL.md` 内置了 46 条高频口语别名，命中就不用读注册表；只有遇到冷门风格才去读 `style-registry.md`。想直接抄指令，看 **[EXAMPLES.md](EXAMPLES.md)**——一份单独成篇、拿来就用的示例库。
 
 ---
 
@@ -168,6 +169,12 @@ anime-image-restyle-skill/
 `cel-90s-film`（年代）＋ `cyber-rain-neon`（题材）＋ 镜头「低机位仰视」（LENS 槽短语）三个维度叠加。
 
 `references/prompt-lexicon.md` 提供 12 个槽位的英文短语库，逐槽取用拼装。槽位只在用户点名时填充，空槽留白。
+
+---
+
+## 7.5 示例库（一键复制）
+
+不想读上面这些？直接看 **[EXAMPLES.md](EXAMPLES.md)**——一份单独成篇的指令清单，按「最常用 / 按风格分类 / 题材 / 地域 / 画幅强度 / 组合示例」组织，每行都能直接复制发给 AI 出图。它随 skill 一起分发，装在 `anime-image-restyle/EXAMPLES.md`。
 
 ---
 
