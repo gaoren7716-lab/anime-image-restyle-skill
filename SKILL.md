@@ -1,12 +1,14 @@
 ---
 name: anime-image-restyle
-version: 1.1.0
-description: 把用户上传的单张原照片直接转换成指定动漫风格并出图。当用户上传图片后说「转成XX风格」「动漫风」「二次元」「水彩」「国风」「赛博朋克」「Q版」「像素」「厚涂」「吉卜力风」「新海诚风」等时使用。默认保留人物身份、表情、姿势、人数、构图与关键物件，只替换视觉语言；支持保真/标准/重构三档强度，以及画幅、背景、光线控制。内置 9 大风格家族 80+ 风格 key 和常见口语别名映射。
+version: 1.3.0
+description: 把用户上传的单张原照片直接转换成指定动漫风格并出图。当用户上传图片后说「转成XX风格」「动漫风」「二次元」「水彩」「国风」「赛博朋克」「Q版」「像素」「厚涂」「吉卜力风」「新海诚风」「素描」「简笔」等时使用。默认保留人物身份、表情、姿势、人数、构图与关键物件，只替换视觉语言；支持保真/标准/重构三档强度，以及画幅、背景、光线控制。采用可组合槽位体系（人设体系+线稿+上色+调色+光影+时代地域+题材美术+氛围+镜头），内置 11 大风格家族 71 个风格 key（含简笔/素描）和常见口语别名映射，可解析任意维度组合。
 ---
 
 # 动漫原图风格转换
 
-最小输入 = **一张原图 + 一个风格名**。用户给到这两项就直接出图，不要再反问确认。
+最小输入 = **一张原图 + 一句风格描述**。用户给到这两项就直接出图，不要再反问确认。
+
+风格描述可以是单一标签（「水彩风」），也可以是任意维度组合（「90年代手绘赛璐璐，雨夜霓虹街，低机位广角」）。两种都要能直接处理。
 
 ## 核心原则
 
@@ -27,17 +29,41 @@ description: 把用户上传的单张原照片直接转换成指定动漫风格�
 3. 本会话中用户最近一次提供的图片路径
 4. 都找不到 → 才问一句原图在哪
 
-### 2. 解析风格
+### 2. 解析风格（槽位拆解）
 
-用户给的可能是一个中文口语说法，不是一个 key。
+一句话风格是**多个维度的组合**。把用户的话拆到下面这些槽位里，命中几个填几个，没提到的槽留空：
 
-- 先在下方「口语别名表」里精确命中。
-- 没命中 → 读 `references/style-registry.md`，按 9 大风格家族找最接近的 key。
-- 风格名是英文 key 或别名 → 直接用。
-- 只说「动漫风 / 二次元」→ 默认 `cel-tv-clean`，并在回复末尾提示可从 9 个家族里选。
-- 用户提到具体作品/作者 → 提取视觉元素，建议最接近的 key，不复述该作品名。
+| 槽位 | 管什么 | 用户可能怎么说 |
+|---|---|---|
+| **媒介/渲染** | 主渲染体系 | 赛璐璐、厚涂、水彩、水墨、3D、像素、黑白 |
+| **人设体系** | 人物比例与受众 | 萌系、少女漫、少年漫、剧画、半写实、Q版、三渲二、轻小说封面、Galgame |
+| **线稿** | 轮廓处理 | 无描边、极细线、粗描边、铅笔线、墨线、彩线、网点线、机械硬线 |
+| **上色** | 明暗塑造方式 | 平涂、双阴影、柔边、半厚涂、厚涂、水彩、网点、蜡笔 |
+| **调色** | 色彩倾向 | 糖果色、复古限色、霓虹、哥特低明度、矿物颜料、印刷套色 |
+| **光影** | 光线设计 | 逆光、硬光、高键柔光、霓虹混光、烛光月光、黄金时刻 |
+| **时代/地域** | 年代与产业 | 昭和、90年代、京阿尼感、中国2D国漫、韩系条漫、美式卡通 |
+| **题材美术** | 服装/道具/场景 | 校园、偶像、魔法少女、仙侠、赛博、机甲、废土、美食、治愈 |
+| **氛围** | 情绪基调 | 治愈、梦幻、热血、压抑、神圣、诡异、浪漫、史诗 |
+| **镜头** | 取景与用途 | 立绘、三视图、近景肖像、全身海报、低机位、广角、分镜、头像 |
+
+**解析顺序**：
+
+1. 先在下方「口语别名表」里精确命中整体说法。
+2. 没整体命中 → 逐槽拆解用户的话，每个维度单独匹配。
+3. 单个槽位没命中 → 读 `references/style-registry.md` 按 11 大风格家族找最接近的 key。
+4. 风格名是英文 key 或别名 → 直接用。
+5. 只说「动漫风 / 二次元」→ 默认 `cel-tv-clean`，并在回复末尾提示可从 11 个家族里选。
+6. 只给了题材没给画风（如「校园风」）→ 主渲染体系默认 `cel-tv-clean`，题材填 `theme-campus-youth`。
+7. 用户提到具体作品/作者 → 提取视觉元素，映射成原创特征描述，**不复述该作品名，不声称复刻**。
 
 **冲突规则**：主渲染体系（赛璐璐 / 厚涂 / 水彩 / 水墨 / 3D / 像素 / 黑白漫画）只能选一个。题材、氛围、年代、镜头类可以叠加在主风格上。用户同时给了两个冲突主风格 → 必须让用户选一个，不要自己混合。
+
+**组合示例**：
+
+- 「90年代手绘赛璐璐，雨夜霓虹街，低机位广角」
+  → 渲染 `cel-90s-film` ＋ 题材 `cyber-rain-neon` ＋ 镜头「低机位仰视」（`prompt-lexicon.md` 的 LENS 槽短语 `low-angle looking up, imposing and heroic`）＋ 电影广角（MOTION 槽 `reframe to a wide cinematic composition`）
+- 「国风仙侠女主，现代中国2D国漫风，细腻线稿，赛璐璐加半厚涂，清晨逆光，全身立绘」
+  → 地域 `cn-2d-donghua` ＋ 题材 `theme-japanese-fantasy` 的国风对应项 `xianxia-ethereal` ＋ 线稿细线 ＋ 上色 `hybrid cel base with painterly rendering` ＋ 光影 `strong backlight` ＋ 镜头 `fullbody-sheet`
 
 ### 3. 编译提示词
 
@@ -46,9 +72,11 @@ description: 把用户上传的单张原照片直接转换成指定动漫风格�
 ```text
 Transform Image 1 into an original [STYLE NAME] anime illustration. Preserve the recognizable identity and facial features of every subject, the exact number of subjects, pose, expression, body proportions, hairstyle silhouette, clothing silhouette, key objects, camera angle, composition, crop, spatial layout, and the original image aspect ratio [OR REQUESTED ASPECT RATIO].
 
-Visual direction: [LINEWORK]. [COLORING]. [PALETTE]. [LIGHTING]. [MATERIAL AND TEXTURE]. [BACKGROUND TREATMENT]. [MOTION/COMPOSITION CUES].
+Visual direction: [ERA/REGION]. [CHARACTER BASE]. [LINEWORK]. [COLORING]. [PALETTE]. [LIGHTING]. [THEME]. [MOOD]. [MATERIAL AND TEXTURE]. [BACKGROUND TREATMENT]. [LENS]. [MOTION CUES].
 
 Change only the visual rendering style unless the user explicitly requested content changes. Keep hands anatomically coherent, eyes aligned, facial features consistent, clean silhouettes, and readable object geometry. Preserve any existing text exactly when legible; otherwise omit new text.
+
+**槽位填充纪律**：只填用户点名或风格 key 隐含的槽位，**不要用默认值填满所有槽**。空槽留白比堆砌无关修饰词出图更准。
 
 Do not add extra people, duplicate limbs, alter identity, change ethnicity, change age category, replace important objects, add watermark, add logo, add signature, add random text, make plastic skin, blur the face, or introduce deformed hands.
 ```
@@ -140,6 +168,50 @@ Do not add extra people, duplicate limbs, alter identity, change ethnicity, chan
 | 二游立绘、抽卡图、游戏宣传图 | `game-gacha-render` |
 | 头像 | `icon-avatar`（追加修饰符） |
 | 贴纸、抠图 | `sticker-cutout`（追加修饰符） |
+| 素描、铅笔素描、铅笔画 | `sketch-pencil` |
+| 简笔、简笔画、极简线描 | `line-minimal` |
+
+### 时代与地域
+
+| 用户说法 | key |
+|---|---|
+| 国漫、中国2D国漫、国产2D | `cn-2d-donghua` |
+| 韩漫、条漫、webtoon、韩国漫画 | `kr-webtoon` |
+| 韩游、韩国游戏概念图、韩系立绘 | `kr-game-concept` |
+| 美式卡通、欧美卡通 | `us-cartoon` |
+| 迪士尼风、皮克斯风、美式动画电影 | `us-animation-film` |
+| 美漫、超英漫画、超级英雄漫画 | `us-superhero-comic` |
+| 欧式绘本、法漫、欧洲漫画 | `fr-european-picturebook` |
+| 俄式童话、东欧动画、民俗动画 | `ru-eastern-folktale` |
+
+### 人设体系
+
+| 用户说法 | key |
+|---|---|
+| galgame、美少女游戏、Galgame立绘 | `galgame-portrait` |
+
+### 题材美术（可叠加）
+
+| 用户说法 | key |
+|---|---|
+| 校园、青春、校园番、制服 | `theme-campus-youth` |
+| 偶像、舞台、演唱会、爱豆 | `theme-idol-stage` |
+| 魔法少女、变身、魔法少女番 | `theme-magical-girl` |
+| 异世界、转生、轻奇幻、冒险者 | `theme-isekai-fantasy` |
+| 和风、日式幻想、神社、妖怪和风 | `theme-japanese-fantasy` |
+| 西幻、西方奇幻、史诗奇幻、龙与城堡 | `theme-western-epic` |
+| 治愈系、日常番、温馨日常 | `theme-daily-healing` |
+| 美食番、料理、食物特写 | `theme-food-anime` |
+| 未来都市、极简科幻、白色未来 | `theme-minimal-future` |
+| 深夜食堂、居酒屋、市井美食 | `theme-gourmet-night` |
+
+### 镜头与用途
+
+| 用户说法 | key |
+|---|---|
+| 立绘、角色立绘、全身立绘 | `fullbody-sheet` |
+| 主视觉、KV、海报 | `key-visual` |
+| 分镜、漫画格、漫画分镜 | `manga-panel` |
 
 ## 迭代修订
 
@@ -162,6 +234,9 @@ Do not add extra people, duplicate limbs, alter identity, change ethnicity, chan
 
 ## 参考文件
 
-- `references/style-registry.md` — 9 大风格家族完整注册表（A-I，80+ key），别名表没命中时读这个。
-- `references/prompt-lexicon.md` — 英文提示词短语库，按 slot 取用，保证出图措辞稳定。
+- `references/style-registry.md` — 11 大风格家族完整注册表（A-K，71 key），别名表没命中时读这个。
+  A 赛璐璐与年代 / B 人设与漫画语言 / C 绘画与插画渲染 / D 日系电影氛围 / E 东方与国风 /
+  F 科幻机械未来 / G 暗黑恐怖末世 / H 3D游戏像素 / **I 镜头与用途修饰符** /
+  **J 题材与世界美术** / **K 地域与产业美学**。J 和 K 是可叠加层。
+- `references/prompt-lexicon.md` — 英文提示词短语库，12 个可组合槽位，按 slot 取用，保证出图措辞稳定。
 - `scripts/probe_image.py` — 纯标准库读取原图宽高，用于「原比例」时判断横竖构图。

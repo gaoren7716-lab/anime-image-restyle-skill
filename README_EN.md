@@ -12,7 +12,7 @@ A skill package for any AI assistant that supports skills — Claude Code, WorkB
 [upload photo] cyberpunk, simplified background, strong
 ```
 
-![version](https://img.shields.io/badge/version-1.1.0-blue)
+![version](https://img.shields.io/badge/version-1.3.0-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
 
@@ -38,12 +38,12 @@ The repository root **is** the skill. Clone it and copy the whole folder into yo
 ### From GitHub
 
 ```bash
-git clone https://github.com/OWNER/anime-image-restyle-skill.git
+git clone https://github.com/gaoren7716-lab/anime-image-restyle-skill.git
 ```
 
 ### Or download a release zip
 
-Grab `anime-image-restyle-v1.1.0.zip` from the [Releases](https://github.com/OWNER/anime-image-restyle-skill/releases) page and unzip it. The archive contains only the runtime skill files — `SKILL.md`, both READMEs, `LICENSE`, `references/`, and `scripts/probe_image.py` — with no `.github/`, `CHANGELOG.md`, or packaging script.
+Grab `anime-image-restyle-v1.3.0.zip` from the [Releases](https://github.com/gaoren7716-lab/anime-image-restyle-skill/releases) page and unzip it. The archive contains only the runtime skill files — `SKILL.md`, both READMEs, `LICENSE`, `references/`, and `scripts/probe_image.py` — with no `.github/`, `CHANGELOG.md`, or packaging script.
 
 ### Claude Code / Claude family
 
@@ -87,14 +87,14 @@ anime-image-restyle-skill/
 ├── .github/
 │   └── workflows/release.yml     # builds + uploads the zip on tag push
 ├── references/
-│   ├── style-registry.md         # 9 style families, 87 style keys
-│   └── prompt-lexicon.md         # English prompt phrase bank, organized by slot
+│   ├── style-registry.md         # 11 style families, 71 style keys
+│   └── prompt-lexicon.md         # English prompt phrase bank, 12 composable slots
 └── scripts/
     ├── probe_image.py            # stdlib-only image dimension probe
     └── package.py                # packs the runtime files into a distributable zip
 ```
 
-The split exists to **save tokens**: `SKILL.md` embeds 24 high-frequency colloquial aliases, so a match never touches the registry. Only uncommon styles trigger a read of `style-registry.md`.
+The split exists to **save tokens**: `SKILL.md` embeds 46 high-frequency colloquial aliases, so a match never touches the registry. Only uncommon styles trigger a read of `style-registry.md`.
 
 ---
 
@@ -103,8 +103,8 @@ The split exists to **save tokens**: `SKILL.md` embeds 24 high-frequency colloqu
 | Step | What happens |
 |---|---|
 | 1 | Locate the source image (this turn's attachment → absolute path written by the user → most recent image in the session) |
-| 2 | Resolve the style (colloquial alias table → nine-family registry → if ambiguous, ask the user to pick a rendering system) |
-| 3 | Assemble an **English** prompt from the template, drawing phrases from `prompt-lexicon.md` |
+| 2 | Resolve the style: split the request across slots (alias table first → per-slot matching → eleven-family registry → if ambiguous, ask the user to pick a rendering system) |
+| 3 | Assemble an **English** prompt from the 12-slot template, drawing phrases from `prompt-lexicon.md` |
 | 4 | Call the image-to-image tool (aspect ratio and fidelity mapped by tier) |
 | 5 | Deliver the result + a one-line summary + append a ledger row |
 
@@ -138,21 +138,36 @@ The package contains **no machine-specific absolute paths** — it runs anywhere
 
 ## 7. Style system at a glance
 
-Nine families, 87 keys total:
+Eleven families, 71 keys total (v1.3.0 trimmed the 116-key set by removing heavily duplicated cel-era variants and very niche sub-styles, and added pencil sketch / minimal line):
 
 | Family | Representative keys |
 |---|---|
-| A Cel shading & eras | `cel-tv-clean`, `cel-90s-film`, `cel-80s-ova`, `cel-00s-vn` |
-| B Character design & manga | `shonen-dynamic`, `shoujo-ethereal`, `chibi-2head`, `manga-bw-screentone` |
-| C Painterly & illustration | `semi-paint-anime`, `painterly-fantasy`, `anime-watercolor`, `colored-pencil` |
-| D Japanese cinematic mood | `sky-luminous-cinema`, `handpainted-nature-fable`, `urban-rain-romance` |
+| A Cel shading & eras | `cel-tv-clean`, `cel-90s-film`, `cel-00s-moe`, `cel-10s-clear`, `cel-dual-shadow`, `cel-soft-edge` |
+| B Character design & manga | `shonen-dynamic`, `shoujo-ethereal`, `chibi-2head`, `chibi-4head`, `manga-bw-screentone`, `galgame-portrait` |
+| C Painterly & illustration | `semi-paint-anime`, `painterly-fantasy`, `anime-watercolor`, `colored-pencil`, `sketch-pencil` (pencil sketch), `line-minimal` (minimal line) |
+| D Japanese cinematic mood | `sky-luminous-cinema`, `handpainted-nature-fable`, `urban-rain-romance`, `sunset-nostalgia` |
 | E East Asian & guofeng | `guofeng-cel`, `gongbi-heavy-color`, `xieyi-ink`, `dunhuang-mural`, `xianxia-ethereal` |
-| F Sci-fi, mecha, future | `cyber-rain-neon`, `mecha-hard-surface`, `solarpunk`, `steampunk-brass` |
-| G Dark, horror, apocalypse | `gothic-lace`, `yokai-kaidan`, `post-apocalypse`, `urban-noir` |
-| H 3D, game, pixel | `anime-3d-cel`, `game-gacha-render`, `pixel-16bit`, `voxel-anime` |
-| I Scene & lens modifiers | `portrait-card`, `key-visual`, `vertical-cover`, `sticker-cutout` (stacks onto any main style) |
+| F Sci-fi, mecha, future | `cyber-rain-neon`, `mecha-cel`, `steampunk-brass`, `retro-future-80s` |
+| G Dark, horror, apocalypse | `gothic-lace`, `yokai-kaidan`, `post-apocalypse` |
+| H 3D, game, pixel | `anime-3d-cel`, `game-gacha-render`, `pixel-16bit`, `toon-3d-clean` |
+| I Lens & purpose modifiers | `fullbody-sheet`, `key-visual`, `vertical-cover`, `sticker-cutout` (stacks onto any main style) |
+| J Subject & world art | `theme-campus-youth`, `theme-idol-stage`, `theme-magical-girl`, `theme-isekai-fantasy` (stacks) |
+| K Regional & industry aesthetics | `cn-2d-donghua`, `kr-webtoon`, `us-cartoon`, `us-superhero-comic`, `fr-european-picturebook` |
 
-Saying just "anime style" defaults to `cel-tv-clean`.
+Saying just "anime style" defaults to `cel-tv-clean`. Naming only a subject with no rendering system (e.g. "campus style") also defaults the rendering to `cel-tv-clean`.
+
+### Composable slot system
+
+A style is not a single label — it is a **combination of dimensions**. One sentence can specify all of:
+
+```
+medium/render + character base + linework + coloring + palette + lighting + era/region + subject art + mood + lens
+```
+
+For example, "1990s hand-drawn cel, rainy neon street, low-angle wide shot" decomposes into
+`cel-90s-film` (era) + `cyber-rain-neon` (subject) + the lens phrase "low-angle looking up" (LENS slot).
+
+`references/prompt-lexicon.md` provides the English phrase bank across 12 slots. Fill only the slots the user actually named — leave the rest empty rather than padding with defaults.
 
 ---
 

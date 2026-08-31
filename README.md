@@ -12,7 +12,7 @@
 [上传照片] 赛博朋克，简化背景，强度
 ```
 
-![version](https://img.shields.io/badge/version-1.1.0-blue)
+![version](https://img.shields.io/badge/version-1.3.0-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
 
@@ -38,12 +38,12 @@
 ### 从 GitHub 克隆
 
 ```bash
-git clone https://github.com/OWNER/anime-image-restyle-skill.git
+git clone https://github.com/gaoren7716-lab/anime-image-restyle-skill.git
 ```
 
 ### 或下载 Release 压缩包
 
-从 [Releases](https://github.com/OWNER/anime-image-restyle-skill/releases) 页面下载 `anime-image-restyle-v1.1.0.zip` 解压。压缩包内只含运行所需文件（`SKILL.md`、两份 README、`LICENSE`、`references/`、`scripts/probe_image.py`），不含 `.github/`、`CHANGELOG.md` 和打包脚本。
+从 [Releases](https://github.com/gaoren7716-lab/anime-image-restyle-skill/releases) 页面下载 `anime-image-restyle-v1.3.0.zip` 解压。压缩包内只含运行所需文件（`SKILL.md`、两份 README、`LICENSE`、`references/`、`scripts/probe_image.py`），不含 `.github/`、`CHANGELOG.md` 和打包脚本。
 
 ### Claude Code / Claude 系
 
@@ -87,14 +87,14 @@ anime-image-restyle-skill/
 ├── .github/
 │   └── workflows/release.yml     # 打 tag 时自动打包并上传到 Release
 ├── references/
-│   ├── style-registry.md         # 9 大风格家族、87 个风格 key 全量注册表
-│   └── prompt-lexicon.md         # 英文提示词短语库（按 slot 取用）
+│   ├── style-registry.md         # 11 大风格家族、71 个风格 key 全量注册表
+│   └── prompt-lexicon.md         # 英文提示词短语库（12 个可组合槽位）
 └── scripts/
     ├── probe_image.py            # 纯标准库读图片宽高，判横竖构图
     └── package.py                # 把运行文件打成可分发的 zip
 ```
 
-分文件是为了省 token：`SKILL.md` 内置了 24 条高频口语别名，命中就不用读注册表；只有遇到冷门风格才去读 `style-registry.md`。
+分文件是为了省 token：`SKILL.md` 内置了 46 条高频口语别名，命中就不用读注册表；只有遇到冷门风格才去读 `style-registry.md`。
 
 ---
 
@@ -103,7 +103,7 @@ anime-image-restyle-skill/
 | 步骤 | 做什么 |
 |---|---|
 | 1 | 定位原图（本轮附件路径 → 用户写的绝对路径 → 本会话最近一次图片） |
-| 2 | 解析风格（口语别名表 → 九大家族注册表 → 模糊时让用户选主渲染体系） |
+| 2 | 解析风格（口语别名表 → 逐槽拆解 → 十一大家族注册表 → 模糊时让用户选主渲染体系） |
 | 3 | 用 `prompt-lexicon.md` 的英文短语，按模板组装成英文 prompt |
 | 4 | 调图生图工具出图（画幅、保真度按档位映射） |
 | 5 | 呈现成品 + 摘要 + 记一行 ledger |
@@ -138,21 +138,36 @@ anime-image-restyle-skill/
 
 ## 7. 风格体系速览
 
-九大家族，共 87 个 key：
+十一个家族，共 71 个 key（v1.3.0 在 116 key 基础上删除高度重复的赛璐璐年代变体与极冷门子类，并新增简笔/素描）：
 
 | 家族 | 代表 key |
 |---|---|
-| A 赛璐璐与年代 | `cel-tv-clean`、`cel-90s-film`、`cel-80s-ova`、`cel-00s-vn` |
-| B 人设与漫画语言 | `shonen-dynamic`、`shoujo-ethereal`、`chibi-2head`、`manga-bw-screentone` |
-| C 绘画与插画渲染 | `semi-paint-anime`、`painterly-fantasy`、`anime-watercolor`、`colored-pencil` |
-| D 日系电影氛围 | `sky-luminous-cinema`、`handpainted-nature-fable`、`urban-rain-romance` |
+| A 赛璐璐与年代 | `cel-tv-clean`、`cel-90s-film`、`cel-00s-moe`、`cel-10s-clear`、`cel-dual-shadow`、`cel-soft-edge` |
+| B 人设与漫画语言 | `shonen-dynamic`、`shoujo-ethereal`、`chibi-2head`、`chibi-4head`、`manga-bw-screentone`、`galgame-portrait` |
+| C 绘画与插画渲染 | `semi-paint-anime`、`painterly-fantasy`、`anime-watercolor`、`colored-pencil`、`sketch-pencil`（铅笔素描）、`line-minimal`（极简简笔） |
+| D 日系电影氛围 | `sky-luminous-cinema`、`handpainted-nature-fable`、`urban-rain-romance`、`sunset-nostalgia` |
 | E 东方与国风 | `guofeng-cel`、`gongbi-heavy-color`、`xieyi-ink`、`dunhuang-mural`、`xianxia-ethereal` |
-| F 科幻机械未来 | `cyber-rain-neon`、`mecha-hard-surface`、`solarpunk`、`steampunk-brass` |
-| G 暗黑恐怖末世 | `gothic-lace`、`yokai-kaidan`、`post-apocalypse`、`urban-noir` |
-| H 3D 游戏像素 | `anime-3d-cel`、`game-gacha-render`、`pixel-16bit`、`voxel-anime` |
-| I 场景镜头修饰符 | `portrait-card`、`key-visual`、`vertical-cover`、`sticker-cutout`（可叠加到任意主风格） |
+| F 科幻机械未来 | `cyber-rain-neon`、`mecha-cel`、`steampunk-brass`、`retro-future-80s` |
+| G 暗黑恐怖末世 | `gothic-lace`、`yokai-kaidan`、`post-apocalypse` |
+| H 3D 游戏像素 | `anime-3d-cel`、`game-gacha-render`、`pixel-16bit`、`toon-3d-clean` |
+| I 镜头与用途修饰符 | `fullbody-sheet`、`key-visual`、`vertical-cover`、`sticker-cutout`（可叠加） |
+| J 题材与世界美术 | `theme-campus-youth`、`theme-idol-stage`、`theme-magical-girl`、`theme-isekai-fantasy`（可叠加） |
+| K 地域与产业美学 | `cn-2d-donghua`、`kr-webtoon`、`us-cartoon`、`us-superhero-comic`、`fr-european-picturebook` |
 
-只说「动漫风 / 二次元」时默认走 `cel-tv-clean`。
+只说「动漫风 / 二次元」时默认走 `cel-tv-clean`。只给题材没给画风时（如「校园风」），渲染体系同样默认 `cel-tv-clean`。
+
+### 可组合槽位体系
+
+风格不是单一标签，而是**多个维度的组合**。一句话可以同时指定：
+
+```
+媒介/渲染 + 人设体系 + 线稿 + 上色 + 调色 + 光影 + 时代或地域 + 题材美术 + 氛围 + 镜头
+```
+
+例如「90年代手绘赛璐璐，雨夜霓虹街，低机位广角」会拆解为
+`cel-90s-film`（年代）＋ `cyber-rain-neon`（题材）＋ 镜头「低机位仰视」（LENS 槽短语）三个维度叠加。
+
+`references/prompt-lexicon.md` 提供 12 个槽位的英文短语库，逐槽取用拼装。槽位只在用户点名时填充，空槽留白。
 
 ---
 
