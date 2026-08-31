@@ -1,0 +1,19 @@
+# 生成产物
+outputs/
+dist/
+ledger.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 本地草稿（不进版本库）
+*.local.md

@@ -1,0 +1,13 @@
+# Normalize to LF in the repository and on checkout, on every platform.
+# The skill is distributed as markdown + python, so consistent line endings
+# keep diffs clean and avoid CRLF leaking into generated release archives.
+* text=auto eol=lf
+
+# Binary assets — never touch these
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.bmp binary
+*.zip binary
